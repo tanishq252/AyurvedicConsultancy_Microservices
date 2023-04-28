@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 
 let Prescription = new Schema({
     doctorname: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: String,
         required: true
     },
     body: {
