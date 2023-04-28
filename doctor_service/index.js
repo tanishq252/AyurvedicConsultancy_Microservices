@@ -4,6 +4,9 @@ import bodyParser from 'body-parser';
 import mongosse from 'mongoose';
 import dotenv from 'dotenv';
 import { MongoClient } from 'mongodb';
+import User from './models/user.js';
+import Query from './models/query.js';
+import Doctor from './models/doctor.js';
 
 // initializing the app
 const app  = express();
@@ -21,7 +24,36 @@ app.get('/doctorService', (req, res)=>{
     res.send("doctorService");
 })
 
+// create a prescription
+app.post('/userService/:uid/:qid/prescription', async (req, res) => {
+    try{
+        const userId = req.params.uid;
+        const user = await User.findById(userId);
+        console.log(user);
+        if(!user){
+            return res.status(402).json({message: "No user exists with given id"})
+        }
+        const newQuery = new Query({
+            userID: req.params.uid,
+            body: req.body.body,
+            prescriptions: []
+        })
+        const query = await newQuery.save();
+        return res.status(200).json({message:"query created successfully", query: query})
+    }catch(error){
+        return res.status(500).json({error:error.message})
+    }
+})
 
+// get all the queries
+app.get('/userService/queries', async (req, res) => {
+    try{
+        const queries = await Query.find();
+        return res.status(200).json(queries)
+    }catch(error){
+        return res.status(500).json({error:error.message})
+    }
+})
 
 const client = new MongoClient(process.env.CONNECTION_URL);
 

@@ -66,7 +66,8 @@ app.post('/authService/signup', async (req, res) => {
                     username: username,
                     email: email,
                     password: password,
-                    client: client
+                    client: client,
+                    queries: []
                 })
                 const user = await newUser.save();
                 return res.status(200).json({"user": user, "message": "user created successfully!"});

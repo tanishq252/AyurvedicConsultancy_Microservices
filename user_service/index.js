@@ -34,11 +34,16 @@ app.post('/userService/:uid/query', async (req, res) => {
             return res.status(402).json({message: "No user exists with given id"})
         }
         const newQuery = new Query({
-            userID: req.params.uid,
+            username: user.username,
             body: req.body.body,
             prescriptions: []
         })
         const query = await newQuery.save();
+        console.log(query);
+        
+        user.queries.push(query)
+        console.log(user.queries);
+        await User.findByIdAndUpdate(userId, {queries: user.queries}, {new:true})
         return res.status(200).json({message:"query created successfully", query: query})
     }catch(error){
         return res.status(500).json({error:error.message})

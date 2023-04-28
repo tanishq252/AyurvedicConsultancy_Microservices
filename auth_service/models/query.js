@@ -4,8 +4,8 @@ import user from "./user";
 const Schema = mongoose.Schema;
 
 let Query = new Schema({
-    userID: {
-        type: mongoose.Schema.Types.ObjectId,
+    username: {
+        type: String,
         required: true
     },
     body: {

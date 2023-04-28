@@ -4,7 +4,7 @@ import user from "./user";
 const Schema = mongoose.Schema;
 
 let Prescription = new Schema({
-    doctorID: {
+    doctorname: {
         type: mongoose.Schema.Types.ObjectId,
         required: true
     },

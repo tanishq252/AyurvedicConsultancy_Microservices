@@ -18,6 +18,9 @@ let User = new Schema({
     client: {
         type: String,
         required: true
+    },
+    queries: {
+        type: Array,
     }
 });
 
