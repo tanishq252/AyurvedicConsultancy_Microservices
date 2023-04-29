@@ -8,7 +8,6 @@ import User from './models/user.js';
 import Query from './models/query.js';
 import Prescription from './models/prescription.js';
 import Doctor from './models/doctor.js';
-// import Query from './models/query.js';
 
 // initializing the app
 const app  = express();
@@ -111,12 +110,12 @@ app.delete('/doctorService/:qid/:pid', async(req, res) => {
         return res.status(200).json({message: "deleted successfully", query: qry})
 
     }catch(error){
-
+        return res.status(500).json({error:error.message})
     }
 })
 
 // get all the queries
-app.get('/doctorrService/queries', async (req, res) => {
+app.get('/doctorService/queries', async (req, res) => {
     try{
         const queries = await Query.find();
         return res.status(200).json(queries)
