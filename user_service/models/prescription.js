@@ -7,6 +7,14 @@ let Prescription = new Schema({
         type: String,
         required: true
     },
+    doctorId: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true
+    },
+    queryId: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true
+    },
     body: {
         type: String,
         required: true

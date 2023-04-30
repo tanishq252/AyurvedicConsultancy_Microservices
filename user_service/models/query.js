@@ -11,6 +11,10 @@ let Query = new Schema({
         type: String,
         required: true
     },
+    userID: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true
+    },
     prescriptions: {
         type: Array,
     }

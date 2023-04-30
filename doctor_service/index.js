@@ -41,10 +41,12 @@ app.post('/doctorService/:did/:qid/prescription', async (req, res) => {
         }
         const newPrescription = new Prescription({
             doctorname: doctor.doctorname,
+            doctorId: docId,
+            queryId: queryId,
             body: req.body.body,
         })
         const prescription = await newPrescription.save();
-        qry.prescriptions.push(prescription)
+        qry.prescriptions.push(prescription._id)
         await Query.findByIdAndUpdate(queryId, {prescriptions: qry.prescriptions},{new:true})
         return res.status(200).json({message:"prescription created successfully", prescription: prescription, Query: qry})
     }catch(error){
@@ -53,7 +55,7 @@ app.post('/doctorService/:did/:qid/prescription', async (req, res) => {
 })
 
 // update a prescription
-app.patch('/doctorService/:qid/:pid', async(req, res) => {
+app.patch('/doctorService/:pid', async(req, res) => {
     try{
         const prescId = req.params.pid;
         const presc = await Prescription.findById(prescId)
@@ -62,24 +64,8 @@ app.patch('/doctorService/:qid/:pid', async(req, res) => {
         }
         const {body} = req.body;
         console.log(body);
-        // update body
-        presc.body = body;
 
-        const queryId = req.params.qid
-        const qry = await Query.findById(queryId)
-
-        // find the index of prescription in the prescriptions array of query
-        const prescIndex = qry.prescriptions.findIndex((obj => obj._id == prescId))
-        console.log(prescIndex);
-
-        // update prescription in its colllection
-        await Prescription.findByIdAndUpdate(prescId, {body: presc.body}, {new: true})
-
-        qry.prescriptions[prescIndex] = presc;
-        console.log(qry.prescriptions[prescIndex]);
-
-        // update prescription in queries
-        await Query.findByIdAndUpdate(queryId, {prescriptions: qry.prescriptions},{new:true})
+        await Prescription.findByIdAndUpdate(prescId, {body: body},{new:true})
 
         return res.status(200).json({message: "prescription updated successfully", prescription : presc})
     }catch(error){
@@ -96,8 +82,6 @@ app.delete('/doctorService/:qid/:pid', async(req, res) => {
             return res.status(402).json({message: "No such prescription exists"})
         }
 
-        await Prescription.findByIdAndDelete(prescId)
-
         const queryId = req.params.qid
         const qry = await Query.findById(queryId)
 
@@ -107,6 +91,8 @@ app.delete('/doctorService/:qid/:pid', async(req, res) => {
 
         await Query.findByIdAndUpdate(queryId, {prescriptions: qry.prescriptions},{new:true})
 
+        await Prescription.findByIdAndDelete(prescId)
+
         return res.status(200).json({message: "deleted successfully", query: qry})
 
     }catch(error){
@@ -115,10 +101,10 @@ app.delete('/doctorService/:qid/:pid', async(req, res) => {
 })
 
 // get all the queries
-app.get('/doctorService/queries', async (req, res) => {
+app.get('/doctorService/prescriptions', async (req, res) => {
     try{
-        const queries = await Query.find();
-        return res.status(200).json(queries)
+        const prescriptions = await Prescription.find();
+        return res.status(200).json(prescriptions)
     }catch(error){
         return res.status(500).json({error:error.message})
     }

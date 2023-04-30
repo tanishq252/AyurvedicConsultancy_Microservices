@@ -36,12 +36,13 @@ app.post('/userService/:uid/query', async (req, res) => {
         const newQuery = new Query({
             username: user.username,
             body: req.body.body,
+            userID: userId,
             prescriptions: []
         })
         const query = await newQuery.save();
         console.log(query);
         
-        user.queries.push(query)
+        user.queries.push(query._id)
         console.log(user.queries);
         await User.findByIdAndUpdate(userId, {queries: user.queries}, {new:true})
         return res.status(200).json({message:"query created successfully", query: query})

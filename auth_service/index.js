@@ -29,12 +29,12 @@ app.get('/authService', (req, res)=>{
 // signup
 app.post('/authService/signup', async (req, res) => {
     const{client, email} = req.body;
-    if(req.body.client.toString() == "doctor"){
+    if(req.body.client == "doctor"){
         try{
             const emailExist = await Doctor.findOne({email:email})
             console.log(`${emailExist}`);
             if(emailExist){
-                return res.status(400).json("This email already exsts!")
+                return res.status(400).json("This email already exists!")
             }
             else{
                 const {doctorname, password, registrationNo} = req.body;
@@ -58,7 +58,7 @@ app.post('/authService/signup', async (req, res) => {
         try{
             const emailExist = await User.findOne({email:email})
             if(emailExist){
-                return res.status(400).json("This email already exsts!")
+                return res.status(400).json("This email already exists!")
             }
             else{
                 const {username, password} = req.body;
@@ -79,9 +79,9 @@ app.post('/authService/signup', async (req, res) => {
 })
 
 // sign in
-app.get('/authService/signin', async(req, res) => {
+app.post('/authService/signin', async(req, res) => {
     const {client, email} = req.body;
-    if(client.toString() == "doctor"){
+    if(req.body.client == "doctor"){
         try{
             const doctor = await Doctor.findOne({email: email});
             if(!doctor){
@@ -98,7 +98,7 @@ app.get('/authService/signin', async(req, res) => {
         try{
             const user = await User.findOne({email: email});
             if(!user){
-                return res.status(402).json("No such doctor exists")
+                return res.status(402).json("No such user exists")
             }
             if(req.body.password != user.password){
                 return res.status(402).json("Password does not match for any of the user")
